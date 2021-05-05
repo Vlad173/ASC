@@ -1,0 +1,97 @@
+In[489]:= tasks = {
+	Sin[2*x^3]^2/x^3
+	, (x^2 - 4)*Sin[(Pi*(x^2))/6] / (x^2 - 1)
+	, Sqrt[Abs[3*x^3 + 2*x^2 - 10*x]] / (4*x)
+	, 1/2 * Log[Sqrt[x^2 + 1] / Sqrt[x^2 - 1]] - 15*x^2
+	, (x^3 - x^2 - x + 1)^(1/3) / Tan[x]
+	, 2*Log[(x - 1) / x] + 1
+	, Log[x - 1] / (x - 1)^2
+}
+
+In[490]:= getVariantForNumber[number_, variationsQuo_]:=(
+	Module[{t},
+		t = Mod[number , variationsQuo];
+		If[t != 0
+				, t
+				, variationsQuo
+			]
+	]
+)
+
+In[491]:= (* Проверяем, что все графики строятся нормально *)
+Table[Plot[tasks[[i]], {x, -10, 10}], {i, 1, Length[tasks]}]
+
+In[492]:= yourNumber = 9  (*сюда вбить ваш номер по списку в рейтинге *)
+numberOfYourTask = getVariantForNumber[yourNumber, Length[tasks]]
+Print["Номер вашего задания: ", numberOfYourTask]
+f[y_] := tasks[[numberOfYourTask]]/.x->y;
+f[x]//TraditionalForm
+
+In[497]:= Plot[
+	f[x]
+	, {x, -10, 10}
+]
+
+In[499]:= res1 = f[x] == f[-x] //TautologyQ
+res2 = f[x] + f[-x] == 0 //TautologyQ
+If[res1, "Функция четная", Null]
+If[res2, "Функция нечетная", Null]
+If[Not[res1||res2], "Функция прочая", Null]
+
+In[504]:= FunctionDomain[f[x], x]
+
+In[505]:= FunctionPeriod[f[x], x] (*Так как FunctionPeriod выдала 0, то периода у функции нет*)
+
+In[506]:= sols = Solve[f[x]==0, x] 
+points = {x, 0}/.sols 
+g1 = Plot[f[x], {x, -10, 10}, PlotStyle->Blue];
+g2 = ListPlot[points, PlotStyle->{Red, PointSize[Large]}];
+Show[{g1, g2}]
+
+In[511]:= f[-1.5]
+f[-0.5]
+f[0.6]
+f[1.5]
+
+In[515]:= g1 = Graphics[Line[{{0,0}, {20,0}}]];
+g2 = Graphics[Text[Style["-2", 24], {0.1, 1}]];
+g3 = Graphics[Text[Style["-1", 24], {6, 1}]];
+g4 = Graphics[Text[Style["2", 24], {19.9, 1}]];
+g5 = Graphics[Text[Style["1", 24], {13, 1}]];
+g6 = Graphics[Text[Style["-", 24], {3, 1}]];
+g7 = Graphics[Text[Style["+", 24], {9.5, 1}]];
+g8 = Graphics[Text[Style["-", 24], {16.5, 1}]];
+g9 = Graphics[{PointSize[0.02], Point[{0.1, 0}, VertexColors->Red]}];
+g10 = Graphics[{PointSize[0.02], Point[{6, 0}, VertexColors->Red]}];
+g11 = Graphics[{PointSize[0.02], Point[{19.9, 0}, VertexColors->Red]}];
+g12 = Graphics[{PointSize[0.02], Point[{13, 0}, VertexColors->Red]}];
+Show[{g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12}, ImageSize->{500, 100}]
+
+In[528]:= df = D[f[x], x]
+
+In[529]:= Solve[df == 0, x]
+
+In[530]:= f[0]
+
+In[531]:= f'[-0.5]
+
+In[532]:= f'[0.5]
+
+In[533]:= g1 = Graphics[Line[{{0,0}, {10,0}}]];
+g2 = Graphics[Text[Style["-1", 18], {0, 0.5}]];
+g3 = Graphics[Text[Style["0", 18], {5, 0.5}]];
+g4 = Graphics[Text[Style["1", 18], {10, 0.5}]];
+g5 = Graphics[Arrow[{{6,0.5}, {9,1}}]];
+g6 = Graphics[Arrow[{{1,1}, {4,0.5}}]];
+Show[{g1, g2, g3, g4, g5, g6}]
+
+In[540]:= Limit[f[x], x ->-1, Direction -> "FromAbove"]
+Limit[f[x], x -> -1, Direction -> "FromBelow"]
+Limit[f[x], x ->1, Direction -> "FromAbove"]
+Limit[f[x], x -> 1, Direction -> "FromBelow"]
+
+In[544]:= ResourceFunction["Asymptotes"][f[x], x, y]
+g1 = Plot[f[x], {x, -5, 5}, PlotStyle->Blue];
+g2 = Graphics[{Red,Line[{{-1,-3}, {-1,3}}]}];
+g3 = Graphics[{Red,Line[{{1,-3}, {1,3}}]}];
+Show[{g1,g2, g3}]
